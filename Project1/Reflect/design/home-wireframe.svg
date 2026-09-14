@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="1000" viewBox="0 0 700 1000">
+  <rect width="700" height="1000" fill="#eeeeee"/>
+  <rect x="120" y="40" width="460" height="900" rx="35" fill="white" stroke="#555" stroke-width="4"/>
+  <text x="350" y="105" text-anchor="middle" font-family="Arial" font-size="32" font-weight="bold">REFLECT</text>
+  <text x="350" y="140" text-anchor="middle" font-family="Arial" font-size="18">How are you feeling today?</text>
+  <text x="155" y="205" font-family="Arial" font-size="20" font-weight="bold">Pick a mood</text>
+  <rect x="155" y="225" width="75" height="75" fill="none" stroke="#555"/>
+  <rect x="245" y="225" width="75" height="75" fill="none" stroke="#555"/>
+  <rect x="335" y="225" width="75" height="75" fill="none" stroke="#555"/>
+  <rect x="425" y="225" width="75" height="75" fill="none" stroke="#555"/>
+  <text x="350" y="270" text-anchor="middle" font-family="Arial" font-size="16">MOODS</text>
+  <text x="155" y="350" font-family="Arial" font-size="20" font-weight="bold">What's on your mind?</text>
+  <rect x="155" y="370" width="390" height="170" fill="none" stroke="#555" stroke-width="3"/>
+  <text x="175" y="405" font-family="Arial" font-size="16">Write your reflection...</text>
+  <rect x="155" y="575" width="390" height="60" rx="12" fill="#cccccc" stroke="#555"/>
+  <text x="350" y="613" text-anchor="middle" font-family="Arial" font-size="20">SAVE ENTRY</text>
+  <rect x="155" y="660" width="390" height="60" rx="12" fill="#cccccc" stroke="#555"/>
+  <text x="350" y="698" text-anchor="middle" font-family="Arial" font-size="20">VIEW JOURNAL</text>
+  <text x="350" y="790" text-anchor="middle" font-family="Arial" font-size="18">Low-fidelity home screen design</text>
+</svg>

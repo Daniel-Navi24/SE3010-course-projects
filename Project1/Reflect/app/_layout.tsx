@@ -6,13 +6,17 @@ import { colors } from "../theme/colors";
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: colors.bg },
+          contentStyle: {
+            backgroundColor: colors.bg,
+          },
         }}
-      />
+      >
+        <Stack.Screen name="(tabs)" />
+      </Stack>
     </SafeAreaProvider>
   );
 }

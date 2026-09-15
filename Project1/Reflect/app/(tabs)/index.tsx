@@ -11,11 +11,11 @@ import {
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Header from "../components/Header";
-import MoodPicker from "../components/MoodPicker";
-import PrimaryButton from "../components/PrimaryButton";
-import { colors } from "../theme/colors";
-import { saveEntry, loadEntries, Mood, Entry } from "../utils/storage";
+import Header from "../../components/Header";
+import MoodPicker from "../../components/MoodPicker";
+import PrimaryButton from "../../components/PrimaryButton";
+import { colors } from "../../theme/colors";
+import { saveEntry, loadEntries, Mood, Entry } from "../../utils/storage";
 
 export default function Home() {
   const router = useRouter();
@@ -42,6 +42,7 @@ export default function Home() {
     };
 
     await saveEntry(entry);
+
     await Haptics.notificationAsync(
       Haptics.NotificationFeedbackType.Success
     );
@@ -50,13 +51,11 @@ export default function Home() {
     setText("");
     setMood(null);
     setSaved((s) => !s);
-  };
 
-  const openJournal = () => {
-    router.push({
+    router.navigate({
       pathname: "/entries",
       params: {
-        highlight: lastSavedId ?? "",
+        highlight: entry.id,
       },
     });
   };
@@ -74,6 +73,7 @@ export default function Home() {
           <MoodPicker value={mood} onChange={setMood} />
 
           <Text style={styles.label}>What's on your mind?</Text>
+
           <TextInput
             style={styles.input}
             multiline
@@ -95,14 +95,6 @@ export default function Home() {
             onPress={handleSave}
             disabled={!canSave}
           />
-
-          <View style={{ height: 12 }} />
-
-          <PrimaryButton
-            label={`View Journal (${totalEntries})`}
-            icon="book-outline"
-            onPress={openJournal}
-          />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -110,8 +102,13 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.bg },
-  container: { padding: 20 },
+  safe: {
+    flex: 1,
+    backgroundColor: colors.bg,
+  },
+  container: {
+    padding: 20,
+  },
   label: {
     fontSize: 14,
     fontWeight: "600",

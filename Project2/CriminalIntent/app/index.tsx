@@ -1,18 +1,11 @@
 import React, { useCallback, useState } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
-import { useFocusEffect, router } from "expo-router";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { View, Text, FlatList, StyleSheet, ActivityIndicator } from "react-native";
+import { router, useFocusEffect } from "expo-router";
 import { useTheme } from "../context/ThemeContext";
 import { loadCrimes } from "../utils/storage";
 import { Crime } from "../types/Crime";
 import { ScreenHeader } from "../components/ScreenHeader";
+import { CrimeListItem } from "../components/CrimeListItem";
 
 export default function IndexScreen() {
   const { theme } = useTheme();
@@ -35,40 +28,6 @@ export default function IndexScreen() {
     }, [])
   );
 
-  const renderItem = ({ item }: { item: Crime }) => (
-    <Pressable
-      onPress={() =>
-        router.push({ pathname: "/detail", params: { id: item.id } })
-      }
-      style={({ pressed }) => [
-        styles.row,
-        {
-          backgroundColor: theme.card,
-          borderBottomColor: theme.border,
-          opacity: pressed ? 0.7 : 1,
-        },
-      ]}
-    >
-      <View style={{ flex: 1 }}>
-        <Text style={[styles.title, { color: theme.text }]} numberOfLines={1}>
-          {item.title || "(untitled)"}
-        </Text>
-        <Text style={[styles.date, { color: theme.subtext }]}>
-          {item.date}
-        </Text>
-      </View>
-
-      {item.solved && (
-        <MaterialCommunityIcons
-          name="handcuffs"
-          size={26}
-          color={theme.text}
-          style={{ marginLeft: 12 }}
-        />
-      )}
-    </Pressable>
-  );
-
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <ScreenHeader
@@ -85,14 +44,20 @@ export default function IndexScreen() {
       ) : (
         <FlatList
           data={crimes}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
+          keyExtractor={(c) => c.id}
+          renderItem={({ item }) => (
+            <CrimeListItem
+              crime={item}
+              onPress={() =>
+                router.push({ pathname: "/detail", params: { id: item.id } })
+              }
+            />
+          )}
           ListEmptyComponent={
             <Text style={[styles.empty, { color: theme.subtext }]}>
               No crimes yet. Tap + to add one.
             </Text>
           }
-          contentContainerStyle={{ paddingBottom: 24 }}
         />
       )}
     </View>
@@ -101,14 +66,5 @@ export default function IndexScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  title: { fontSize: 20, fontWeight: "700", marginBottom: 4 },
-  date: { fontSize: 14 },
   empty: { textAlign: "center", marginTop: 40, fontSize: 16 },
 });

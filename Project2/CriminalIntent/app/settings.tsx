@@ -1,14 +1,9 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Pressable,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 import { themes } from "../theme/themes";
 import { useTheme } from "../context/ThemeContext";
 import { ScreenHeader } from "../components/ScreenHeader";
+import { ThemeButton } from "../components/ThemeButton";
 
 export default function SettingsScreen() {
   const { theme, themeKey, setThemeKey } = useTheme();
@@ -17,38 +12,18 @@ export default function SettingsScreen() {
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <ScreenHeader title="Settings" />
-      <ScrollView
-        contentContainerStyle={[
-          styles.content,
-          { backgroundColor: theme.background },
-        ]}
-      >
+      <ScrollView contentContainerStyle={styles.content}>
         <Text style={[styles.heading, { color: theme.text }]}>
           Pick a Theme
         </Text>
-
-        {themeList.map((t) => {
-          const selected = t.key === themeKey;
-          return (
-            <Pressable
-              key={t.key}
-              onPress={() => setThemeKey(t.key)}
-              style={({ pressed }) => [
-                styles.button,
-                {
-                  backgroundColor: t.primary,
-                  borderColor: selected ? theme.text : "transparent",
-                  borderWidth: selected ? 2 : 0,
-                  opacity: pressed ? 0.75 : 1,
-                },
-              ]}
-            >
-              <Text style={[styles.buttonText, { color: t.onPrimary }]}>
-                {t.name}
-              </Text>
-            </Pressable>
-          );
-        })}
+        {themeList.map((t) => (
+          <ThemeButton
+            key={t.key}
+            theme={t}
+            selected={t.key === themeKey}
+            onPress={() => setThemeKey(t.key)}
+          />
+        ))}
       </ScrollView>
     </View>
   );
@@ -56,26 +31,11 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  content: {
-    padding: 24,
-    paddingBottom: 48,
-    gap: 16,
-  },
+  content: { padding: 24, paddingBottom: 48, gap: 16 },
   heading: {
     fontSize: 28,
     fontWeight: "700",
     textAlign: "center",
     marginBottom: 12,
   },
-  button: {
-    paddingVertical: 18,
-    borderRadius: 10,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-  },
-  buttonText: { fontSize: 18, fontWeight: "600" },
 });

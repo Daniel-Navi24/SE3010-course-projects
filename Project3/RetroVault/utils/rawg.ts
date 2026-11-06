@@ -1,22 +1,28 @@
 import { Game, Genre } from "../types/Game";
 const API_KEY = "cbe9c56cab2741edb306b3c1a62a6049";
 const BASE_URL = "https://api.rawg.io/api";
-
 export async function getGamesByGenre(genreId: number): Promise<Game[]> {
-  const res = await fetch(`${BASE_URL}/games?key=${API_KEY}&genres=${genreId}&page_size=20`);
-  if (!res.ok) throw new Error("Failed to fetch games");
-  const data = await res.json();
-  return data.results;
+  try {
+    const res = await fetch(`${BASE_URL}/games?key=${API_KEY}&genres=${genreId}&page_size=20`);
+    if (!res.ok) throw new Error("Failed to fetch");
+    const data = await res.json();
+    return data.results || [];
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
 }
-
 export async function getGameDetails(id: string): Promise<any> {
-  const res = await fetch(`${BASE_URL}/games/${id}?key=${API_KEY}`);
-  if (!res.ok) throw new Error("Failed to fetch game details");
-  return await res.json();
+  try {
+    const res = await fetch(`${BASE_URL}/games/${id}?key=${API_KEY}`);
+    if (!res.ok) throw new Error("Failed to fetch");
+    return await res.json();
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 }
-
 export async function getGenres(): Promise<Genre[]> {
-  // Hardcoding the best genres for the UI to look good
   return [
     { id: 4, name: "Action", image_background: "https://media.rawg.io/media/games/20a/20aa03a10cda45239fe22d035c0ebe64.jpg" },
     { id: 5, name: "RPG", image_background: "https://media.rawg.io/media/games/6cd/6cd653e0aaef5ff8bbd295bf4ff0a109.jpg" },

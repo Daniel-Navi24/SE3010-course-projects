@@ -8,11 +8,10 @@ export type Game = {
 
 const BASE_URL = "https://www.cheapshark.com/api/1.0";
 
-export async function getDeals(title: string = "", storeID: string = ""): Promise<Game[]> {
+export async function getDeals(title: string = ""): Promise<Game[]> {
   try {
     let url = `${BASE_URL}/deals?pageSize=30`;
     if (title) url += `&title=${encodeURIComponent(title)}`;
-    if (storeID) url += `&storeID=${storeID}`;
     
     const res = await fetch(url);
     if (!res.ok) throw new Error("Failed to fetch");
@@ -33,11 +32,19 @@ export async function getDeals(title: string = "", storeID: string = ""): Promis
 
 export async function getDealDetails(id: string): Promise<any> {
   try {
-    const res = await fetch(`${BASE_URL}/deals?id=${id}`);
-    if (!res.ok) throw new Error("Failed to fetch");
-    return await res.json();
+    // Changed endpoint from /deals?id= to /games?id=
+    const res = await fetch(`https://www.cheapshark.com/api/1.0/games?id=${id}`);
+    
+    // If the API returns a 404 or error, don't crash, return null
+    if (!res.ok) {
+      console.warn(`API returned ${res.status} for id: ${id}`);
+      return null; 
+    }
+    
+    const json = await res.json();
+    return json;
   } catch (e) {
-    console.error(e);
+    console.error("Fetch error details:", e);
     return null;
   }
 }

@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Image, ActivityIndicator, StyleSheet } from "react-native";
-import { useLocalSearchParams } from "expo-router";
-import { getGameDetails } from "../utils/rawg";
+import { View, Text, ScrollView, ActivityIndicator, StyleSheet, Pressable } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { getDealDetails } from "../utils/rawg";
 import { ScreenHeader } from "../components/ScreenHeader";
 
 export default function DetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [game, setGame] = useState<any>(null);
+  const [deal, setDeal] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (id) {
-      getGameDetails(id).then(data => {
-        setGame(data);
+      getDealDetails(id).then(data => {
+        setDeal(data);
         setLoading(false);
       });
     }
@@ -20,30 +20,27 @@ export default function DetailScreen() {
 
   return (
     <View style={styles.container}>
-      <ScreenHeader title={game?.name || "Loading..."} />
+      <ScreenHeader title="Deal Details" />
       {loading ? (
         <ActivityIndicator size="large" color="#fff" style={{ marginTop: 50 }} />
       ) : (
-        <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-          <Image source={{ uri: game.background_image }} style={styles.hero} />
-          <View style={{ padding: 16 }}>
-            <Text style={styles.title}>{game.name}</Text>
-            <Text style={styles.meta}>⭐ {game.rating} • {game.released} • {game.genres.map((g: any) => g.name).join(", ")}</Text>
-            
-            <Text style={styles.descTitle}>About</Text>
-            <Text style={styles.desc}>{game.description_raw}</Text>
-
-            {game.screenshots?.length > 0 && (
-              <>
-                <Text style={styles.descTitle}>Screenshots</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 10 }}>
-                  {game.screenshots.map((shot: any) => (
-                    <Image key={shot.id} source={{ uri: shot.image }} style={styles.shot} />
-                  ))}
-                </ScrollView>
-              </>
-            )}
-          </View>
+        <ScrollView contentContainerStyle={{ padding: 16 }}>
+          <Text style={styles.title}>{deal?.info?.title || "Unknown Game"}</Text>
+          <Text style={styles.price}>Best Price: ${deal?.cheapestPrice?.price || "N/A"}</Text>
+          <Text style={styles.meta}>Retail Price: ${deal?.cheapestPrice?.retailPrice || "N/A"}</Text>
+          <Text style={styles.meta}>Savings: {deal?.cheapestPrice?.savings || "0"}%</Text>
+          
+          <Text style={styles.sectionTitle}>Available at:</Text>
+          {deal?.deals?.map((store: any) => (
+            <View key={store.storeID} style={styles.storeRow}>
+              <Text style={styles.storeName}>Store ID: {store.storeID}</Text>
+              <Text style={styles.storePrice}>${store.price}</Text>
+            </View>
+          ))}
+          
+          <Pressable onPress={() => router.push("/")} style={styles.backBtn}>
+            <Text style={styles.backBtnText}>Back to Search</Text>
+          </Pressable>
         </ScrollView>
       )}
     </View>
@@ -52,10 +49,13 @@ export default function DetailScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#000" },
-  hero: { width: "100%", height: 250 },
-  title: { color: "#fff", fontSize: 24, fontWeight: "800", marginBottom: 8 },
-  meta: { color: "#aaa", fontSize: 14, marginBottom: 20 },
-  descTitle: { color: "#fff", fontSize: 18, fontWeight: "700", marginTop: 16, marginBottom: 8 },
-  desc: { color: "#ccc", fontSize: 15, lineHeight: 22 },
-  shot: { width: 280, height: 160, borderRadius: 8, marginRight: 10 },
+  title: { color: "#fff", fontSize: 24, fontWeight: "800", marginBottom: 10 },
+  price: { color: "#4cd964", fontSize: 24, fontWeight: "700", marginBottom: 5 },
+  meta: { color: "#aaa", fontSize: 16, marginBottom: 5 },
+  sectionTitle: { color: "#fff", fontSize: 18, fontWeight: "700", marginTop: 20, marginBottom: 10 },
+  storeRow: { flexDirection: "row", justifyContent: "space-between", paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: "#333" },
+  storeName: { color: "#aaa", fontSize: 16 },
+  storePrice: { color: "#fff", fontSize: 16, fontWeight: "600" },
+  backBtn: { marginTop: 30, backgroundColor: "#1c1c1e", padding: 16, borderRadius: 8, alignItems: "center" },
+  backBtnText: { color: "#fff", fontWeight: "700" },
 });
